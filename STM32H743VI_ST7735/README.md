@@ -2,6 +2,8 @@
 
 This example is a demonstration of how FGL can be used with STM32.
 
+![photo](pic/photo.jpg)
+
 ## Project creation step by step
 
 ### 1. HAL creation with STM32CubeIDE
@@ -46,9 +48,11 @@ With the **Add Directory Path** window open, type **fgl** and click **ok**.
 ![printscreen5](pic/printscreen5.png)
 
 Now go to the **Source Location** tab and click **Add Folder**.
+
 ![printscreen6](pic/printscreen6.png)
 
 With the **Folder Selection** window open, select the **fgl** folder and click **ok**.
+
 ![printscreen7](pic/printscreen7.png)
 
 Once all that is done, you can click **Apply and Close**.
@@ -64,6 +68,8 @@ Once all that is done, you can click **Apply and Close**.
 #include <main.h>
 #include <stm32h7xx_st7735.hpp>
 #include <pencil.hpp>
+//#include <buffered_pencil.hpp>
+#include <math.h>
 
 #define BACKCOLOR_R 0
 #define BACKCOLOR_G 0
@@ -86,16 +92,29 @@ void cpp_main()
 {
 	/* -- setup code section -- */
 	display.init();
+	display.select();
 	display.drawArea(0, 0, display.getWidth()-1, display.getHeight()-2, BACKCOLOR_R, BACKCOLOR_G, BACKCOLOR_B);
 	Pencil pencil(display);
+	//BufferedPencil pencil(display, BACKCOLOR);
 	/* ------------------------ */
 
 	/* -- drawing section -- */
+	pencil.drawRectangle(10, 10, display.getWidth()-20, display.getHeight()-20, Color(1,1,1));
+
+	for(float theta = 0; theta < 2*3.14; theta += 0.25)
+	{
+		Color current_color((sinf(theta)+1)/2, (sinf(theta + 3.14/2)+1)/2, (sinf(theta + 3.14)+1)/2);
+		pencil.drawLine(display.getWidth()/2, display.getHeight()/2, display.getWidth()/2+cosf(theta)*50, display.getHeight()/2+sinf(theta)*50, current_color);
+	}
+
+	pencil.drawCircle(display.getWidth()/2, display.getHeight()/2, 50, Color(1,1,1));
+
 	while(true)
 	{
 		/* -- loop code section -- */
 		/* ----------------------- */
 	}
+
 	/* --------------------- */
 }
 
